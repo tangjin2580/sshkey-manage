@@ -1,0 +1,4 @@
+owner: tangjin2580
+repo: sshkeys
+provider: github
+updaterCacheDirName: ssh-studio-updater

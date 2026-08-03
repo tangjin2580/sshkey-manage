@@ -1,0 +1,6 @@
+{
+  "name": "SSH Key & Connection Manager",
+  "description": "A comprehensive desktop-class WebSSH terminal, SSH key pair generator & uploader, connection profile manager, SFTP file manager & remote code editor, and SSH config manager.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
