@@ -77,6 +77,9 @@ jobs:
           if [ -d release ]; then ls -lhR release/; else echo "(release/ not found)"; fi
 
       # 把本平台的产物上传为 artifact，等 release job 拉取
+      # 故意只列具体的安装包格式，不通配 *.zip / *.tar.gz —— electron-builder
+      # 默认会产出给 auto-updater 用的差分包（.zip, .blockmap, latest.yml），
+      # 这些不该作为发布产物上传到 Release
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -87,8 +90,6 @@ jobs:
             release/*.dmg
             release/*.AppImage
             release/*.deb
-            release/*.zip
-            release/*.tar.gz
 
   # === 第二阶段：等三平台都跑完，合并 artifact 建一个 release ===
   release:
@@ -117,6 +118,7 @@ jobs:
 
       # 按实际 tag 名建 release，三平台产物一次性塞进去
       # tag_name 不写死 —— 默认就是 ${{ github.ref_name }}（去掉 refs/tags/ 前缀）
+      # 同样不通配 .zip/.tar.gz —— 见 Upload build artifacts 的注释
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
@@ -129,7 +131,5 @@ jobs:
             artifacts/**/*.dmg
             artifacts/**/*.AppImage
             artifacts/**/*.deb
-            artifacts/**/*.zip
-            artifacts/**/*.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
