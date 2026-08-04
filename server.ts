@@ -335,8 +335,11 @@ async function startServer() {
     const url = new URL(request.url || '', `http://${request.headers.host}`);
     const hostname = url.searchParams.get('hostname') || '127.0.0.1';
     const port = Number(url.searchParams.get('port') || '22');
-    const username = url.searchParams.get('username') || 'admin';
+    let username = url.searchParams.get('username') || 'admin';
+    if (username === 'undefined') username = 'admin';
     const password = url.searchParams.get('password') || '';
+    const authType = url.searchParams.get('authType') || 'password';
+    const keyId = url.searchParams.get('keyId') || '';
 
     let sshClient: SSHClient | null = null;
     let isVirtual =
@@ -431,12 +434,29 @@ async function startServer() {
       });
 
       try {
-        sshClient.connect({
+        const connectConfig: any = {
           host: hostname,
           port,
           username,
-          password,
-        });
+        };
+        
+        if (authType === 'key' && keyId) {
+          const keys = getAllKeys();
+          const sshKey = keys.find(k => k.id === keyId);
+          if (sshKey && sshKey.privateKey) {
+            connectConfig.privateKey = sshKey.privateKey;
+            if (password) {
+              connectConfig.passphrase = password;
+            }
+          } else {
+            ws.send(`\r\n\x1b[31mSSH Error: Private key not found for keyId ${keyId}\x1b[0m\r\n`);
+            return;
+          }
+        } else {
+          connectConfig.password = password;
+        }
+
+        sshClient.connect(connectConfig);
       } catch (err: any) {
         ws.send(`\r\n\x1b[31mConnection Exception: ${err.message}\x1b[0m\r\n`);
       }
