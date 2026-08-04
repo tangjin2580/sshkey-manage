@@ -1,4 +1,5 @@
 import express from 'express';
+import fs from 'fs';
 import path from 'path';
 import http from 'http';
 import os from 'os';
@@ -212,10 +213,21 @@ async function startServer() {
   app.post('/api/ssh-config/sync-connections', (req, res) => {
     try {
       const entries = parseSSHConfigBlocks();
+      const keys = getAllKeys();
       let importedCount = 0;
 
       for (const e of entries) {
         if (e.host === '*') continue;
+
+        // 把 identityFile basename 在 key store 里查一下，能匹配上的就直接
+        // 把 keyId 填进去 —— 这样连接不需要再走"identityFile 磁盘兜底"
+        let resolvedKeyId: string | undefined;
+        if (e.identityFile) {
+          const basename = path.basename(e.identityFile);
+          const match = keys.find((k) => k.name === basename);
+          if (match) resolvedKeyId = match.id;
+        }
+
         addOrUpdateConnection({
           alias: e.host,
           hostname: e.hostname || '127.0.0.1',
@@ -223,6 +235,7 @@ async function startServer() {
           username: e.user || 'root',
           authType: e.identityFile ? 'key' : 'password',
           identityFile: e.identityFile,
+          keyId: resolvedKeyId,
           group: 'Imported from ~/.ssh/config',
         });
         importedCount++;
@@ -340,6 +353,7 @@ async function startServer() {
     const password = url.searchParams.get('password') || '';
     const authType = url.searchParams.get('authType') || 'password';
     const keyId = url.searchParams.get('keyId') || '';
+    const identityFile = url.searchParams.get('identityFile') || '';
 
     let sshClient: SSHClient | null = null;
     let isVirtual =
@@ -441,21 +455,41 @@ async function startServer() {
         };
         
         if (authType === 'key') {
+          let privateKeyContent = '';
+
           if (keyId) {
             const keys = getAllKeys();
             const sshKey = keys.find(k => k.id === keyId);
             if (sshKey && sshKey.privateKey) {
-              connectConfig.privateKey = sshKey.privateKey;
-              if (password) {
-                connectConfig.passphrase = password;
-              }
+              privateKeyContent = sshKey.privateKey;
             } else {
               ws.send(`\r\n\x1b[31mSSH Error: Private key not found for keyId ${keyId}\x1b[0m\r\n`);
               return;
             }
+          } else if (identityFile) {
+            // 兜底：直接从磁盘读 ~/.ssh/<identityFile>
+            // 这样 sync from ~/.ssh/config 后不用先 import 私钥也能连
+            try {
+              const expanded = identityFile.startsWith('~/') || identityFile.startsWith('~\\')
+                ? path.join(os.homedir(), identityFile.slice(2))
+                : identityFile;
+              if (!fs.existsSync(expanded)) {
+                ws.send(`\r\n\x1b[31mSSH Error: Key file not found: ${expanded}. Check the path or import it into Key Studio first.\x1b[0m\r\n`);
+                return;
+              }
+              privateKeyContent = fs.readFileSync(expanded, 'utf8');
+            } catch (err: any) {
+              ws.send(`\r\n\x1b[31mSSH Error: Failed to read key file: ${err.message}\x1b[0m\r\n`);
+              return;
+            }
           } else {
-            ws.send(`\r\n\x1b[31mSSH Error: Authentication is set to 'Key', but no key is linked to this connection. Open Key Studio, paste your private key, then edit this connection and pick it from the dropdown.\x1b[0m\r\n`);
+            ws.send(`\r\n\x1b[31mSSH Error: Authentication is set to 'Key', but no key is linked. Pick one in the connection edit form, or use 'Sync from ~/.ssh/config'.\x1b[0m\r\n`);
             return;
+          }
+
+          connectConfig.privateKey = privateKeyContent;
+          if (password) {
+            connectConfig.passphrase = password;
           }
         } else {
           connectConfig.password = password;

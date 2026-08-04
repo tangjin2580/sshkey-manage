@@ -172,7 +172,7 @@ export const WebSSHManager: React.FC<WebSSHManagerProps> = ({ connections, initi
           conn.hostname || ''
         )}&port=${conn.port || 22}&username=${encodeURIComponent(actualUsername)}&password=${encodeURIComponent(
           conn.password || ''
-        )}&authType=${encodeURIComponent(conn.authType || 'password')}&keyId=${encodeURIComponent(conn.keyId || '')}`;
+        )}&authType=${encodeURIComponent(conn.authType || 'password')}&keyId=${encodeURIComponent(conn.keyId || '')}&identityFile=${encodeURIComponent(conn.identityFile || '')}`;
 
         const ws = new WebSocket(wsUrl);
         wsInstancesRef.current[sess.id] = ws;

@@ -196,6 +196,24 @@ export const ConnectionManager: React.FC<ConnectionManagerProps> = ({
 
         <div className="flex items-center space-x-2">
           <button
+            onClick={async () => {
+              try {
+                const res = await fetch('/api/ssh-config/sync-connections', { method: 'POST' });
+                const data = await res.json();
+                alert(data.message || (data.success ? 'Synced' : 'Sync failed'));
+                if (data.success && onConnectionsChange) onConnectionsChange();
+              } catch (err: any) {
+                alert('Sync failed: ' + err.message);
+              }
+            }}
+            className="px-3 py-2 bg-[#141414] hover:bg-zinc-700 text-zinc-300 text-xs font-medium rounded-md border border-zinc-700 transition-colors flex items-center space-x-1.5"
+            title="Import all hosts from ~/.ssh/config"
+          >
+            <Download className="w-3.5 h-3.5" />
+            <span>Sync ~/.ssh/config</span>
+          </button>
+
+          <button
             onClick={handleExportJSON}
             className="px-3 py-2 bg-[#141414] hover:bg-zinc-700 text-zinc-300 text-xs font-medium rounded-md border border-zinc-700 transition-colors flex items-center space-x-1.5"
           >
