@@ -538,13 +538,23 @@ export const ConnectionManager: React.FC<ConnectionManagerProps> = ({
                 <div>
                   <label className="block text-zinc-300 font-medium mb-1">{t.privateKey}</label>
                   <select
-                    value={formProfile.identityFile || ''}
-                    onChange={(e) => setFormProfile({ ...formProfile, identityFile: e.target.value })}
+                    // 用 keyId 作为 value —— 服务端需要它去 getAllKeys() 里查 privateKey 内容
+                    // 同时保留 identityFile（显示用）以便老数据 / 列表卡片展示不破
+                    value={formProfile.keyId || ''}
+                    onChange={(e) => {
+                      const selectedKeyId = e.target.value;
+                      const selectedKey = keys.find((k) => k.id === selectedKeyId);
+                      setFormProfile({
+                        ...formProfile,
+                        keyId: selectedKeyId || undefined,
+                        identityFile: selectedKey ? `~/.ssh/${selectedKey.name}` : '',
+                      });
+                    }}
                     className="w-full bg-[#000000] border border-white/10 rounded-md px-3 py-2 text-zinc-200 focus:outline-none focus:border-blue-500 font-mono"
                   >
                     <option value="">{t.noneKey}</option>
                     {keys.map((k) => (
-                      <option key={k.id} value={`~/.ssh/${k.name}`}>
+                      <option key={k.id} value={k.id}>
                         ~/.ssh/{k.name} ({k.type})
                       </option>
                     ))}

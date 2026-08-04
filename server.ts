@@ -454,7 +454,7 @@ async function startServer() {
               return;
             }
           } else {
-            ws.send(`\r\n\x1b[31mSSH Error: Authentication is set to 'Key', but no Key is selected. Since this app runs in the cloud, it cannot read your local ~/.ssh folder. Please go to 'Key Studio', paste your private key, and select it in the connection settings.\x1b[0m\r\n`);
+            ws.send(`\r\n\x1b[31mSSH Error: Authentication is set to 'Key', but no key is linked to this connection. Open Key Studio, paste your private key, then edit this connection and pick it from the dropdown.\x1b[0m\r\n`);
             return;
           }
         } else {
