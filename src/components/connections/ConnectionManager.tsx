@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Server,
   Plus,
@@ -17,8 +17,9 @@ import {
   XCircle,
   Clock,
   Sparkles,
+  FileSearch,
 } from 'lucide-react';
-import { ConnectionProfile, SSHKey } from '../../types';
+import { ConnectionProfile, SSHKey, SSHConfigEntry } from '../../types';
 import { useLanguage } from '../../i18n/LanguageContext';
 
 interface ConnectionManagerProps {
@@ -51,6 +52,9 @@ export const ConnectionManager: React.FC<ConnectionManagerProps> = ({
   const [selectedGroup, setSelectedGroup] = useState<string>('ALL');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [testingId, setTestingId] = useState<string | null>(null);
+  // ~/.ssh/config 解析后的 Host blocks —— 模态框里"读取"按钮的源
+  const [sshConfigEntries, setSshConfigEntries] = useState<SSHConfigEntry[]>([]);
+  const [sshConfigLoading, setSshConfigLoading] = useState(false);
 
   // Form State
   const [formProfile, setFormProfile] = useState<Partial<ConnectionProfile>>({
@@ -69,6 +73,41 @@ export const ConnectionManager: React.FC<ConnectionManagerProps> = ({
 
   // Extract Groups
   const groups = Array.from(new Set((connections || []).map((c) => c.group || 'Default'))).filter(Boolean);
+
+  // 模态框打开时拉一次 ~/.ssh/config，缓存给"读取"按钮用
+  useEffect(() => {
+    if (!isModalOpen) return;
+    setSshConfigLoading(true);
+    fetch('/api/ssh-config')
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.success) setSshConfigEntries(data.entries || []);
+      })
+      .catch(() => {})
+      .finally(() => setSshConfigLoading(false));
+  }, [isModalOpen]);
+
+  // 把一个 ~/.ssh/config 里的 Host 条目套到当前表单
+  // identityFile basename 命中 key store 时，把 keyId 也填上（连的时候走 Key Studio 路径）
+  const applySshConfigEntry = (entry: SSHConfigEntry) => {
+    let resolvedKeyId: string | undefined;
+    if (entry.identityFile) {
+      const basename = entry.identityFile.split('/').pop() || '';
+      const match = keys.find((k) => k.name === basename);
+      if (match) resolvedKeyId = match.id;
+    }
+    setFormProfile((prev) => ({
+      ...prev,
+      alias: entry.host,
+      hostname: entry.hostname || prev.hostname || '',
+      port: entry.port || prev.port || 22,
+      username: entry.user || prev.username || 'root',
+      authType: entry.identityFile ? 'key' : 'password',
+      identityFile: entry.identityFile || prev.identityFile || '',
+      keyId: resolvedKeyId,
+      group: prev.group || 'Imported from ~/.ssh/config',
+    }));
+  };
 
   // Filtered Connections
   const filteredConnections = (connections || []).filter((c) => {
@@ -456,12 +495,20 @@ export const ConnectionManager: React.FC<ConnectionManagerProps> = ({
                   {formProfile.id ? t.editConnection : t.newConnectionModalTitle}
                 </h3>
               </div>
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="text-zinc-400 hover:text-zinc-200 text-sm font-bold"
-              >
-                ✕
-              </button>
+              <div className="flex items-center space-x-2">
+                {/* 模态框里的"从 ~/.ssh/config 读取"下拉 —— 一键套用 Host 块 */}
+                <SSHConfigQuickLoad
+                  entries={sshConfigEntries}
+                  loading={sshConfigLoading}
+                  onPick={applySshConfigEntry}
+                />
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  className="text-zinc-400 hover:text-zinc-200 text-sm font-bold"
+                >
+                  ✕
+                </button>
+              </div>
             </div>
 
             <form onSubmit={handleSaveModal} className="space-y-4 text-xs">
@@ -654,6 +701,64 @@ export const ConnectionManager: React.FC<ConnectionManagerProps> = ({
               </div>
             </form>
           </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// 模态框右上角的小下拉：从 ~/.ssh/config 的 Host 块一键套用
+const SSHConfigQuickLoad: React.FC<{
+  entries: SSHConfigEntry[];
+  loading: boolean;
+  onPick: (entry: SSHConfigEntry) => void;
+}> = ({ entries, loading, onPick }) => {
+  const [open, setOpen] = useState(false);
+  // 排除通配 Host *（catch-all，没具体配置意义）
+  const usable = entries.filter((e) => e.host && e.host !== '*');
+
+  return (
+    <div className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className="px-2.5 py-1.5 bg-[#141414] hover:bg-zinc-700 text-zinc-300 text-[11px] font-medium rounded-md border border-zinc-700 flex items-center space-x-1.5"
+        title="Read ~/.ssh/config and pre-fill this form"
+      >
+        <FileSearch className="w-3.5 h-3.5" />
+        <span>Read ~/.ssh/config</span>
+      </button>
+      {open && (
+        <div className="absolute right-0 top-full mt-1 w-80 max-h-80 overflow-auto bg-[#0a0a0a] border border-white/10 rounded-md shadow-xl z-10">
+          {loading ? (
+            <div className="px-3 py-2 text-[11px] text-zinc-500">Loading ~/.ssh/config…</div>
+          ) : usable.length === 0 ? (
+            <div className="px-3 py-2 text-[11px] text-zinc-500">
+              No Host entries found in ~/.ssh/config.
+            </div>
+          ) : (
+            usable.map((e) => {
+              const keyName = e.identityFile ? e.identityFile.split('/').pop() : '';
+              return (
+                <button
+                  key={e.host + e.hostname}
+                  type="button"
+                  onClick={() => {
+                    onPick(e);
+                    setOpen(false);
+                  }}
+                  className="w-full text-left px-3 py-2 hover:bg-zinc-800 border-b border-white/5 last:border-b-0"
+                >
+                  <div className="text-[12px] text-zinc-100 font-mono">{e.host}</div>
+                  <div className="text-[10px] text-zinc-500 mt-0.5 truncate">
+                    {e.user ? `${e.user}@` : ''}
+                    {e.hostname || '(no HostName)'}:{e.port || 22}
+                    {keyName ? ` · ${keyName}` : ''}
+                  </div>
+                </button>
+              );
+            })
+          )}
         </div>
       )}
     </div>
