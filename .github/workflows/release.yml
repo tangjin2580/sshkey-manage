@@ -1,5 +1,14 @@
 name: Build and Release Electron App
 
+# 解决 403：默认 GITHUB_TOKEN 只读，创建 release 需要 contents: write
+permissions:
+  contents: write
+
+# 同一分支重复 push 时取消旧 run（节省 CI 资源）
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
   push:
     branches:
@@ -17,15 +26,19 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-    
+      # 单平台失败不影响其他平台继续（debug 友好）
+      fail-fast: false
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      # Node 20 已被 GitHub Actions runner 弃用（2025-09-19），切到 Node 22 LTS
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm install
@@ -51,10 +64,19 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      # 调试用：打包完后看 release/ 实际产出了什么（CI 日志直接可见）
+      - name: List release artifacts
+        if: always()
+        run: |
+          echo "=== release/ contents ==="
+          ls -lhR release/ 2>/dev/null || echo "(release/ not found)"
+
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: app-release-${{ matrix.os }}
+          # 即使部分文件没生成也允许上传（不阻塞后续 release 步骤）
+          if-no-files-found: warn
           path: |
             release/*.exe
             release/*.dmg
@@ -65,9 +87,12 @@ jobs:
 
       - name: Release to GitHub
         uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
         with:
           tag_name: latest
           name: Latest Build
+          # 关键：避免部分平台产物缺失时整个 release 步骤失败
+          fail_on_unmatched_files: false
           files: |
             release/*.exe
             release/*.dmg
