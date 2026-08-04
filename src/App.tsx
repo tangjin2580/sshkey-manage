@@ -104,7 +104,7 @@ export default function App() {
 
   return (
     <LanguageProvider>
-      <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-emerald-500/30 selection:text-emerald-300">
+      <div className="min-h-screen bg-[#000000] text-zinc-100 flex flex-col font-sans selection:bg-blue-500/30 selection:text-blue-300">
         {/* Global Application Top Header */}
         <Header
           platformInfo={platformInfo}
@@ -125,7 +125,7 @@ export default function App() {
           />
 
           {/* Dynamic Viewport */}
-          <main className="flex-1 overflow-y-auto bg-slate-950/80 p-2 sm:p-6">
+          <main className="flex-1 overflow-y-auto bg-[#000000] p-2 sm:p-6">
             {activeTab === 'connections' && (
               <ConnectionManager
                 connections={connections}

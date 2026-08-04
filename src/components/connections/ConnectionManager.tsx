@@ -183,21 +183,21 @@ export const ConnectionManager: React.FC<ConnectionManagerProps> = ({
   return (
     <div className="p-6 space-y-6 max-w-7xl mx-auto">
       {/* Top Action Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-900 p-4 rounded-2xl border border-slate-800 shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#0a0a0a] p-4 rounded-md border border-white/10 shadow-sm">
         <div className="flex items-center space-x-3">
-          <div className="p-2.5 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-xl">
+          <div className="p-2.5 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-md">
             <Server className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-base font-semibold text-slate-100">{t.connTitle}</h2>
-            <p className="text-xs text-slate-400">{t.connSubtitle}</p>
+            <h2 className="text-base font-semibold text-zinc-100">{t.connTitle}</h2>
+            <p className="text-xs text-zinc-400">{t.connSubtitle}</p>
           </div>
         </div>
 
         <div className="flex items-center space-x-2">
           <button
             onClick={handleExportJSON}
-            className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium rounded-xl border border-slate-700 transition-colors flex items-center space-x-1.5"
+            className="px-3 py-2 bg-[#141414] hover:bg-zinc-700 text-zinc-300 text-xs font-medium rounded-md border border-zinc-700 transition-colors flex items-center space-x-1.5"
           >
             <Download className="w-3.5 h-3.5" />
             <span>{t.exportConfig}</span>
@@ -219,7 +219,7 @@ export const ConnectionManager: React.FC<ConnectionManagerProps> = ({
               });
               setIsModalOpen(true);
             }}
-            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-medium rounded-xl shadow-md shadow-emerald-600/20 transition-all flex items-center space-x-2"
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-medium rounded-md shadow-sm transition-all flex items-center space-x-2"
           >
             <Plus className="w-4 h-4" />
             <span>{t.addConnection}</span>
@@ -231,13 +231,13 @@ export const ConnectionManager: React.FC<ConnectionManagerProps> = ({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         {/* Search */}
         <div className="relative flex-1 max-w-md">
-          <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+          <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
           <input
             type="text"
             placeholder={t.searchConnections}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-slate-900 border border-slate-800 rounded-xl pl-10 pr-4 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition-colors"
+            className="w-full bg-[#0a0a0a] border border-white/10 rounded-md pl-10 pr-4 py-2 text-xs text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-blue-500 transition-colors"
           />
         </div>
 
@@ -245,10 +245,10 @@ export const ConnectionManager: React.FC<ConnectionManagerProps> = ({
         <div className="flex items-center space-x-1.5 overflow-x-auto pb-1 sm:pb-0">
           <button
             onClick={() => setSelectedGroup('ALL')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors shrink-0 ${
+            className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors shrink-0 ${
               selectedGroup === 'ALL'
-                ? 'bg-slate-800 text-white border border-slate-700'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'bg-[#141414] text-white border border-zinc-700'
+                : 'text-zinc-400 hover:text-zinc-200'
             }`}
           >
             {t.allGroups} ({connections.length})
@@ -258,10 +258,10 @@ export const ConnectionManager: React.FC<ConnectionManagerProps> = ({
             <button
               key={grp}
               onClick={() => setSelectedGroup(grp)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors shrink-0 ${
+              className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors shrink-0 ${
                 selectedGroup === grp
-                  ? 'bg-slate-800 text-white border border-slate-700'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-[#141414] text-white border border-zinc-700'
+                  : 'text-zinc-400 hover:text-zinc-200'
               }`}
             >
               {grp} ({connections.filter((c) => c.group === grp).length})
@@ -278,23 +278,23 @@ export const ConnectionManager: React.FC<ConnectionManagerProps> = ({
           return (
             <div
               key={conn.id}
-              className="bg-slate-900/90 border border-slate-800/90 hover:border-slate-700/90 rounded-2xl p-4 transition-all duration-200 shadow-sm hover:shadow-md flex flex-col justify-between space-y-4 group"
+              className="bg-[#0a0a0a]/90 border border-white/10/90 hover:border-zinc-700/90 rounded-md p-4 transition-all duration-200 shadow-sm hover: flex flex-col justify-between space-y-4 group"
             >
               <div className="space-y-3">
                 {/* Header */}
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
                     <div className="flex items-center space-x-2">
-                      <h3 className="text-sm font-semibold text-slate-100 truncate group-hover:text-emerald-400 transition-colors">
+                      <h3 className="text-sm font-semibold text-zinc-100 truncate group-hover:text-blue-400 transition-colors">
                         {conn.alias}
                       </h3>
                       {conn.group && (
-                        <span className="px-2 py-0.5 text-[10px] bg-slate-800 text-slate-400 rounded-md border border-slate-700/60 font-mono">
+                        <span className="px-2 py-0.5 text-[10px] bg-[#141414] text-zinc-400 rounded-md border border-zinc-700/60 font-mono">
                           {conn.group}
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-slate-400 font-mono mt-0.5">
+                    <p className="text-xs text-zinc-400 font-mono mt-0.5">
                       {conn.username}@{conn.hostname}:{conn.port}
                     </p>
                   </div>
@@ -302,8 +302,8 @@ export const ConnectionManager: React.FC<ConnectionManagerProps> = ({
                   {/* Latency & Status Badge */}
                   <div className="flex items-center space-x-1.5 shrink-0">
                     {conn.status === 'online' ? (
-                      <span className="inline-flex items-center px-2 py-0.5 text-[10px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full">
-                        <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full mr-1 animate-pulse" />
+                      <span className="inline-flex items-center px-2 py-0.5 text-[10px] font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-full">
+                        <span className="w-1.5 h-1.5 bg-blue-400 rounded-full mr-1 animate-pulse" />
                         {conn.latency ? `${conn.latency}ms` : 'Online'}
                       </span>
                     ) : conn.status === 'offline' ? (
@@ -311,7 +311,7 @@ export const ConnectionManager: React.FC<ConnectionManagerProps> = ({
                         Offline
                       </span>
                     ) : (
-                      <span className="inline-flex items-center px-2 py-0.5 text-[10px] font-medium bg-slate-800 text-slate-400 border border-slate-700 rounded-full">
+                      <span className="inline-flex items-center px-2 py-0.5 text-[10px] font-medium bg-[#141414] text-zinc-400 border border-zinc-700 rounded-full">
                         Untested
                       </span>
                     )}
@@ -319,11 +319,11 @@ export const ConnectionManager: React.FC<ConnectionManagerProps> = ({
                 </div>
 
                 {/* Description & Auth Info */}
-                <p className="text-xs text-slate-400 line-clamp-2 min-h-[32px]">
+                <p className="text-xs text-zinc-400 line-clamp-2 min-h-[32px]">
                   {conn.description || 'No description provided.'}
                 </p>
 
-                <div className="flex items-center justify-between text-[11px] text-slate-400 pt-2 border-t border-slate-800/80">
+                <div className="flex items-center justify-between text-[11px] text-zinc-400 pt-2 border-t border-white/10">
                   <div className="flex items-center space-x-1.5">
                     {conn.authType === 'key' ? (
                       <Key className="w-3.5 h-3.5 text-amber-400" />
@@ -332,7 +332,7 @@ export const ConnectionManager: React.FC<ConnectionManagerProps> = ({
                     )}
                     <span className="capitalize">{conn.authType} Auth</span>
                     {conn.identityFile && (
-                      <span className="font-mono text-[10px] text-slate-500 truncate max-w-[120px]">
+                      <span className="font-mono text-[10px] text-zinc-500 truncate max-w-[120px]">
                         ({conn.identityFile.split('/').pop()})
                       </span>
                     )}
@@ -342,12 +342,12 @@ export const ConnectionManager: React.FC<ConnectionManagerProps> = ({
                   {conn.tags && conn.tags.length > 0 && (
                     <div className="flex items-center space-x-1">
                       {conn.tags.slice(0, 2).map((t) => (
-                        <span key={t} className="px-1.5 py-0.5 text-[10px] bg-slate-800 text-slate-400 rounded">
+                        <span key={t} className="px-1.5 py-0.5 text-[10px] bg-[#141414] text-zinc-400 rounded">
                           #{t}
                         </span>
                       ))}
                       {conn.tags.length > 2 && (
-                        <span className="text-[10px] text-slate-500">+{conn.tags.length - 2}</span>
+                        <span className="text-[10px] text-zinc-500">+{conn.tags.length - 2}</span>
                       )}
                     </div>
                   )}
@@ -355,13 +355,13 @@ export const ConnectionManager: React.FC<ConnectionManagerProps> = ({
               </div>
 
               {/* Action Buttons */}
-              <div className="pt-2 flex items-center justify-between gap-1 border-t border-slate-800">
+              <div className="pt-2 flex items-center justify-between gap-1 border-t border-white/10">
                 <div className="flex items-center space-x-1">
                   <button
                     onClick={() => handleTest(conn)}
                     disabled={isTesting}
                     title="Test SSH Connection Handshake"
-                    className="p-1.5 hover:bg-slate-800 text-slate-400 hover:text-slate-200 rounded-lg border border-slate-800 hover:border-slate-700 text-xs flex items-center space-x-1 transition-colors"
+                    className="p-1.5 hover:bg-[#141414] text-zinc-400 hover:text-zinc-200 rounded-md border border-white/10 hover:border-zinc-700 text-xs flex items-center space-x-1 transition-colors"
                   >
                     <Activity className={`w-3.5 h-3.5 ${isTesting ? 'animate-spin text-amber-400' : ''}`} />
                   </button>
@@ -372,7 +372,7 @@ export const ConnectionManager: React.FC<ConnectionManagerProps> = ({
                       setIsModalOpen(true);
                     }}
                     title="Edit Connection Profile"
-                    className="p-1.5 hover:bg-slate-800 text-slate-400 hover:text-slate-200 rounded-lg border border-slate-800 hover:border-slate-700 text-xs transition-colors"
+                    className="p-1.5 hover:bg-[#141414] text-zinc-400 hover:text-zinc-200 rounded-md border border-white/10 hover:border-zinc-700 text-xs transition-colors"
                   >
                     <Edit2 className="w-3.5 h-3.5" />
                   </button>
@@ -380,7 +380,7 @@ export const ConnectionManager: React.FC<ConnectionManagerProps> = ({
                   <button
                     onClick={() => handleDelete(conn.id)}
                     title="Delete Connection"
-                    className="p-1.5 hover:bg-rose-500/10 text-slate-400 hover:text-rose-400 rounded-lg border border-slate-800 hover:border-rose-500/20 text-xs transition-colors"
+                    className="p-1.5 hover:bg-rose-500/10 text-zinc-400 hover:text-rose-400 rounded-md border border-white/10 hover:border-rose-500/20 text-xs transition-colors"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
@@ -389,7 +389,7 @@ export const ConnectionManager: React.FC<ConnectionManagerProps> = ({
                 <div className="flex items-center space-x-2">
                   <button
                     onClick={() => (onOpenSFTP ? onOpenSFTP(conn) : onLaunchSftp?.(conn))}
-                    className="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium rounded-xl border border-slate-700 transition-colors flex items-center space-x-1.5"
+                    className="px-2.5 py-1.5 bg-[#141414] hover:bg-zinc-700 text-zinc-200 text-xs font-medium rounded-md border border-zinc-700 transition-colors flex items-center space-x-1.5"
                   >
                     <FolderTree className="w-3.5 h-3.5 text-blue-400" />
                     <span>SFTP</span>
@@ -397,7 +397,7 @@ export const ConnectionManager: React.FC<ConnectionManagerProps> = ({
 
                   <button
                     onClick={() => (onOpenTerminal ? onOpenTerminal(conn) : onLaunchTerminal?.(conn))}
-                    className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-xl shadow-sm transition-all flex items-center space-x-1.5"
+                    className="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-md shadow-sm transition-all flex items-center space-x-1.5"
                   >
                     <Terminal className="w-3.5 h-3.5" />
                     <span>WebSSH</span>
@@ -410,15 +410,15 @@ export const ConnectionManager: React.FC<ConnectionManagerProps> = ({
       </div>
 
       {filteredConnections.length === 0 && (
-        <div className="text-center py-12 bg-slate-900 border border-slate-800 rounded-2xl p-8 space-y-3">
-          <Server className="w-10 h-10 text-slate-600 mx-auto" />
-          <h3 className="text-sm font-medium text-slate-300">{t.noConnections}</h3>
-          <p className="text-xs text-slate-500 max-w-sm mx-auto">
+        <div className="text-center py-12 bg-[#0a0a0a] border border-white/10 rounded-md p-8 space-y-3">
+          <Server className="w-10 h-10 text-zinc-600 mx-auto" />
+          <h3 className="text-sm font-medium text-zinc-300">{t.noConnections}</h3>
+          <p className="text-xs text-zinc-500 max-w-sm mx-auto">
             {t.noConnectionsDesc}
           </p>
           <button
             onClick={() => setIsModalOpen(true)}
-            className="mt-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-medium rounded-xl"
+            className="mt-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-medium rounded-md"
           >
             {t.addFirstConnection}
           </button>
@@ -427,20 +427,20 @@ export const ConnectionManager: React.FC<ConnectionManagerProps> = ({
 
       {/* Add / Edit Connection Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-xl p-6 shadow-2xl space-y-5">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+        <div className="fixed inset-0 bg-[#000000]  z-50 flex items-center justify-center p-4">
+          <div className="bg-[#0a0a0a] border border-white/10 rounded-md w-full max-w-xl p-6  space-y-5">
+            <div className="flex items-center justify-between border-b border-white/10 pb-4">
               <div className="flex items-center space-x-2.5">
-                <div className="p-2 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-xl">
+                <div className="p-2 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-md">
                   <Server className="w-5 h-5" />
                 </div>
-                <h3 className="text-sm font-semibold text-slate-100">
+                <h3 className="text-sm font-semibold text-zinc-100">
                   {formProfile.id ? t.editConnection : t.newConnectionModalTitle}
                 </h3>
               </div>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="text-slate-400 hover:text-slate-200 text-sm font-bold"
+                className="text-zinc-400 hover:text-zinc-200 text-sm font-bold"
               >
                 ✕
               </button>
@@ -449,73 +449,73 @@ export const ConnectionManager: React.FC<ConnectionManagerProps> = ({
             <form onSubmit={handleSaveModal} className="space-y-4 text-xs">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-slate-300 font-medium mb-1">{t.alias} *</label>
+                  <label className="block text-zinc-300 font-medium mb-1">{t.alias} *</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. Production Web 01"
                     value={formProfile.alias || ''}
                     onChange={(e) => setFormProfile({ ...formProfile, alias: e.target.value })}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-emerald-500"
+                    className="w-full bg-[#000000] border border-white/10 rounded-md px-3 py-2 text-zinc-200 focus:outline-none focus:border-blue-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 font-medium mb-1">{t.group}</label>
+                  <label className="block text-zinc-300 font-medium mb-1">{t.group}</label>
                   <input
                     type="text"
                     placeholder="e.g. Production, Staging, Dev"
                     value={formProfile.group || ''}
                     onChange={(e) => setFormProfile({ ...formProfile, group: e.target.value })}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-emerald-500"
+                    className="w-full bg-[#000000] border border-white/10 rounded-md px-3 py-2 text-zinc-200 focus:outline-none focus:border-blue-500"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="sm:col-span-2">
-                  <label className="block text-slate-300 font-medium mb-1">{t.hostname} *</label>
+                  <label className="block text-zinc-300 font-medium mb-1">{t.hostname} *</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. 172.16.20.101 or server.example.com"
                     value={formProfile.hostname || ''}
                     onChange={(e) => setFormProfile({ ...formProfile, hostname: e.target.value })}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-emerald-500 font-mono"
+                    className="w-full bg-[#000000] border border-white/10 rounded-md px-3 py-2 text-zinc-200 focus:outline-none focus:border-blue-500 font-mono"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 font-medium mb-1">{t.port} *</label>
+                  <label className="block text-zinc-300 font-medium mb-1">{t.port} *</label>
                   <input
                     type="number"
                     required
                     value={formProfile.port || 22}
                     onChange={(e) => setFormProfile({ ...formProfile, port: Number(e.target.value) })}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-emerald-500 font-mono"
+                    className="w-full bg-[#000000] border border-white/10 rounded-md px-3 py-2 text-zinc-200 focus:outline-none focus:border-blue-500 font-mono"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-slate-300 font-medium mb-1">{t.username} *</label>
+                  <label className="block text-zinc-300 font-medium mb-1">{t.username} *</label>
                   <input
                     type="text"
                     required
                     placeholder="root / admin / ubuntu"
                     value={formProfile.username || ''}
                     onChange={(e) => setFormProfile({ ...formProfile, username: e.target.value })}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-emerald-500 font-mono"
+                    className="w-full bg-[#000000] border border-white/10 rounded-md px-3 py-2 text-zinc-200 focus:outline-none focus:border-blue-500 font-mono"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 font-medium mb-1">{t.authMethod}</label>
+                  <label className="block text-zinc-300 font-medium mb-1">{t.authMethod}</label>
                   <select
                     value={formProfile.authType || 'password'}
                     onChange={(e) => setFormProfile({ ...formProfile, authType: e.target.value as any })}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-emerald-500"
+                    className="w-full bg-[#000000] border border-white/10 rounded-md px-3 py-2 text-zinc-200 focus:outline-none focus:border-blue-500"
                   >
                     <option value="password">{t.password}</option>
                     <option value="key">{t.privateKey}</option>
@@ -525,22 +525,22 @@ export const ConnectionManager: React.FC<ConnectionManagerProps> = ({
 
               {formProfile.authType === 'password' ? (
                 <div>
-                  <label className="block text-slate-300 font-medium mb-1">{t.password}</label>
+                  <label className="block text-zinc-300 font-medium mb-1">{t.password}</label>
                   <input
                     type="password"
                     placeholder="Enter password..."
                     value={formProfile.password || ''}
                     onChange={(e) => setFormProfile({ ...formProfile, password: e.target.value })}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-emerald-500 font-mono"
+                    className="w-full bg-[#000000] border border-white/10 rounded-md px-3 py-2 text-zinc-200 focus:outline-none focus:border-blue-500 font-mono"
                   />
                 </div>
               ) : (
                 <div>
-                  <label className="block text-slate-300 font-medium mb-1">{t.privateKey}</label>
+                  <label className="block text-zinc-300 font-medium mb-1">{t.privateKey}</label>
                   <select
                     value={formProfile.identityFile || ''}
                     onChange={(e) => setFormProfile({ ...formProfile, identityFile: e.target.value })}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-emerald-500 font-mono"
+                    className="w-full bg-[#000000] border border-white/10 rounded-md px-3 py-2 text-zinc-200 focus:outline-none focus:border-blue-500 font-mono"
                   >
                     <option value="">{t.noneKey}</option>
                     {keys.map((k) => (
@@ -553,19 +553,19 @@ export const ConnectionManager: React.FC<ConnectionManagerProps> = ({
               )}
 
               <div>
-                <label className="block text-slate-300 font-medium mb-1">Description / Notes</label>
+                <label className="block text-zinc-300 font-medium mb-1">Description / Notes</label>
                 <textarea
                   rows={2}
                   placeholder="Optional server description..."
                   value={formProfile.description || ''}
                   onChange={(e) => setFormProfile({ ...formProfile, description: e.target.value })}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-emerald-500"
+                  className="w-full bg-[#000000] border border-white/10 rounded-md px-3 py-2 text-zinc-200 focus:outline-none focus:border-blue-500"
                 />
               </div>
 
               {/* Tags Input */}
               <div>
-                <label className="block text-slate-300 font-medium mb-1">{t.tags}</label>
+                <label className="block text-zinc-300 font-medium mb-1">{t.tags}</label>
                 <div className="flex items-center space-x-2">
                   <input
                     type="text"
@@ -578,12 +578,12 @@ export const ConnectionManager: React.FC<ConnectionManagerProps> = ({
                         handleAddTag();
                       }
                     }}
-                    className="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-slate-200 focus:outline-none focus:border-emerald-500"
+                    className="flex-1 bg-[#000000] border border-white/10 rounded-md px-3 py-1.5 text-zinc-200 focus:outline-none focus:border-blue-500"
                   />
                   <button
                     type="button"
                     onClick={handleAddTag}
-                    className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl border border-slate-700"
+                    className="px-3 py-1.5 bg-[#141414] hover:bg-zinc-700 text-zinc-200 rounded-md border border-zinc-700"
                   >
                     Add
                   </button>
@@ -593,13 +593,13 @@ export const ConnectionManager: React.FC<ConnectionManagerProps> = ({
                   {(formProfile.tags || []).map((tVal) => (
                     <span
                       key={tVal}
-                      className="inline-flex items-center space-x-1 px-2 py-0.5 bg-slate-800 text-slate-300 text-[11px] rounded-lg border border-slate-700"
+                      className="inline-flex items-center space-x-1 px-2 py-0.5 bg-[#141414] text-zinc-300 text-[11px] rounded-md border border-zinc-700"
                     >
                       <span>#{tVal}</span>
                       <button
                         type="button"
                         onClick={() => handleRemoveTag(tVal)}
-                        className="text-slate-400 hover:text-rose-400 font-bold"
+                        className="text-zinc-400 hover:text-rose-400 font-bold"
                       >
                         ×
                       </button>
@@ -609,17 +609,17 @@ export const ConnectionManager: React.FC<ConnectionManagerProps> = ({
               </div>
 
               {/* Footer Buttons */}
-              <div className="flex items-center justify-end space-x-3 pt-4 border-t border-slate-800">
+              <div className="flex items-center justify-end space-x-3 pt-4 border-t border-white/10">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl"
+                  className="px-4 py-2 bg-[#141414] hover:bg-zinc-700 text-zinc-300 rounded-md"
                 >
                   {t.cancel}
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-medium rounded-xl shadow-md shadow-emerald-600/20"
+                  className="px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white font-medium rounded-md shadow-sm"
                 >
                   {t.saveConnection}
                 </button>

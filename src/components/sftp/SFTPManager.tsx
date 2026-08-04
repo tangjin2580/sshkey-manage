@@ -205,14 +205,14 @@ export const SFTPManager: React.FC<SFTPManagerProps> = ({ connections, initialCo
   return (
     <div className="p-6 space-y-6 max-w-7xl mx-auto">
       {/* Top Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-900 p-4 rounded-2xl border border-slate-800 shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#0a0a0a] p-4 rounded-md border border-white/10 shadow-sm">
         <div className="flex items-center space-x-3">
-          <div className="p-2.5 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-xl">
+          <div className="p-2.5 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-md">
             <FolderTree className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-base font-semibold text-slate-100">{t.sftpTitle}</h2>
-            <p className="text-xs text-slate-400">{t.sftpSubtitle}</p>
+            <h2 className="text-base font-semibold text-zinc-100">{t.sftpTitle}</h2>
+            <p className="text-xs text-zinc-400">{t.sftpSubtitle}</p>
           </div>
         </div>
 
@@ -221,7 +221,7 @@ export const SFTPManager: React.FC<SFTPManagerProps> = ({ connections, initialCo
           <select
             value={selectedConnId}
             onChange={(e) => setSelectedConnId(e.target.value)}
-            className="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs font-mono text-slate-200 focus:outline-none focus:border-blue-500"
+            className="bg-[#141414] border border-zinc-700 rounded-md px-3 py-2 text-xs font-mono text-zinc-200 focus:outline-none focus:border-blue-500"
           >
             {connections.map((c) => (
               <option key={c.id} value={c.id}>
@@ -232,7 +232,7 @@ export const SFTPManager: React.FC<SFTPManagerProps> = ({ connections, initialCo
 
           <button
             onClick={() => setIsUploadOpen(true)}
-            className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium rounded-xl border border-slate-700 flex items-center space-x-1.5 transition-colors"
+            className="px-3 py-2 bg-[#141414] hover:bg-zinc-700 text-zinc-200 text-xs font-medium rounded-md border border-zinc-700 flex items-center space-x-1.5 transition-colors"
           >
             <Upload className="w-3.5 h-3.5 text-blue-400" />
             <span>{t.uploadFile}</span>
@@ -240,9 +240,9 @@ export const SFTPManager: React.FC<SFTPManagerProps> = ({ connections, initialCo
 
           <button
             onClick={() => setIsNewFolderOpen(true)}
-            className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium rounded-xl border border-slate-700 flex items-center space-x-1.5 transition-colors"
+            className="px-3 py-2 bg-[#141414] hover:bg-zinc-700 text-zinc-200 text-xs font-medium rounded-md border border-zinc-700 flex items-center space-x-1.5 transition-colors"
           >
-            <Plus className="w-3.5 h-3.5 text-emerald-400" />
+            <Plus className="w-3.5 h-3.5 text-blue-400" />
             <span>{t.newFolder}</span>
           </button>
         </div>
@@ -251,12 +251,12 @@ export const SFTPManager: React.FC<SFTPManagerProps> = ({ connections, initialCo
       {/* Main SFTP Dual Pane Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[580px]">
         {/* Left Pane: File Directory Browser */}
-        <div className="lg:col-span-5 bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col space-y-3">
+        <div className="lg:col-span-5 bg-[#0a0a0a] border border-white/10 rounded-md p-4 flex flex-col space-y-3">
           {/* Path Breadcrumbs Bar */}
-          <div className="flex items-center space-x-1 bg-slate-950 px-3 py-2 rounded-xl border border-slate-800 text-xs font-mono text-slate-300 overflow-x-auto">
+          <div className="flex items-center space-x-1 bg-[#000000] px-3 py-2 rounded-md border border-white/10 text-xs font-mono text-zinc-300 overflow-x-auto">
             <button
               onClick={() => setCurrentPath('/')}
-              className="hover:text-emerald-400 font-bold px-1"
+              className="hover:text-blue-400 font-bold px-1"
             >
               /
             </button>
@@ -264,10 +264,10 @@ export const SFTPManager: React.FC<SFTPManagerProps> = ({ connections, initialCo
               const subPath = '/' + pathParts.slice(0, idx + 1).join('/');
               return (
                 <React.Fragment key={subPath}>
-                  <ChevronRight className="w-3 h-3 text-slate-600 shrink-0" />
+                  <ChevronRight className="w-3 h-3 text-zinc-600 shrink-0" />
                   <button
                     onClick={() => setCurrentPath(subPath)}
-                    className="hover:text-emerald-400 truncate max-w-[100px]"
+                    className="hover:text-blue-400 truncate max-w-[100px]"
                   >
                     {part}
                   </button>
@@ -279,28 +279,28 @@ export const SFTPManager: React.FC<SFTPManagerProps> = ({ connections, initialCo
           {/* Search & Refresh */}
           <div className="flex items-center space-x-2">
             <div className="relative flex-1">
-              <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+              <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
               <input
                 type="text"
                 placeholder="Filter files..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-8 pr-3 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none"
+                className="w-full bg-[#000000] border border-white/10 rounded-md pl-8 pr-3 py-1.5 text-xs text-zinc-200 placeholder-zinc-500 focus:outline-none"
               />
             </div>
 
             <button
               onClick={() => fetchDirectory(currentPath)}
               title="Reload Directory"
-              className="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl border border-slate-700"
+              className="p-2 bg-[#141414] hover:bg-zinc-700 text-zinc-300 rounded-md border border-zinc-700"
             >
-              <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-emerald-400' : ''}`} />
+              <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-blue-400' : ''}`} />
             </button>
 
             <button
               onClick={() => setIsNewFileOpen(true)}
               title="Create New File"
-              className="p-2 bg-slate-800 hover:bg-slate-700 text-emerald-400 rounded-xl border border-slate-700"
+              className="p-2 bg-[#141414] hover:bg-zinc-700 text-blue-400 rounded-md border border-zinc-700"
             >
               <FileCode className="w-3.5 h-3.5" />
             </button>
@@ -316,10 +316,10 @@ export const SFTPManager: React.FC<SFTPManagerProps> = ({ connections, initialCo
                 <div
                   key={item.path}
                   onClick={() => handleOpenFile(item)}
-                  className={`flex items-center justify-between p-2.5 rounded-xl border text-xs font-mono transition-all cursor-pointer group ${
+                  className={`flex items-center justify-between p-2.5 rounded-md border text-xs font-mono transition-all cursor-pointer group ${
                     isSelectedForEdit
-                      ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
-                      : 'bg-slate-950/60 border-slate-800/80 hover:border-slate-700 text-slate-300'
+                      ? 'bg-blue-500/10 border-blue-500/30 text-blue-300'
+                      : 'bg-[#000000]/60 border-white/10 hover:border-zinc-700 text-zinc-300'
                   }`}
                 >
                   <div className="flex items-center space-x-2.5 truncate">
@@ -332,14 +332,14 @@ export const SFTPManager: React.FC<SFTPManagerProps> = ({ connections, initialCo
                   </div>
 
                   <div className="flex items-center space-x-3 shrink-0">
-                    <span className="text-[10px] text-slate-500 font-mono">
+                    <span className="text-[10px] text-zinc-500 font-mono">
                       {isDirectory ? 'DIR' : `${(item.size / 1024).toFixed(1)} KB`}
                     </span>
 
                     <button
                       onClick={(e) => handleDeleteItem(item.path, e)}
                       title="Delete Item"
-                      className="opacity-0 group-hover:opacity-100 p-1 hover:bg-rose-500/10 text-slate-500 hover:text-rose-400 rounded transition-all"
+                      className="opacity-0 group-hover:opacity-100 p-1 hover:bg-rose-500/10 text-zinc-500 hover:text-rose-400 rounded transition-all"
                     >
                       <Trash2 className="w-3 h-3" />
                     </button>
@@ -351,14 +351,14 @@ export const SFTPManager: React.FC<SFTPManagerProps> = ({ connections, initialCo
         </div>
 
         {/* Right Pane: Remote File Code Editor */}
-        <div className="lg:col-span-7 bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col space-y-3">
+        <div className="lg:col-span-7 bg-[#0a0a0a] border border-white/10 rounded-md p-4 flex flex-col space-y-3">
           {activeEditorFile ? (
             <>
               {/* Editor Header Bar */}
-              <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+              <div className="flex items-center justify-between border-b border-white/10 pb-3">
                 <div className="flex items-center space-x-2 truncate">
-                  <FileCode className="w-4 h-4 text-emerald-400 shrink-0" />
-                  <span className="font-mono text-xs text-slate-200 font-semibold truncate">
+                  <FileCode className="w-4 h-4 text-blue-400 shrink-0" />
+                  <span className="font-mono text-xs text-zinc-200 font-semibold truncate">
                     {activeEditorFile.path}
                   </span>
                   {activeEditorFile.isDirty && (
@@ -370,10 +370,10 @@ export const SFTPManager: React.FC<SFTPManagerProps> = ({ connections, initialCo
                   <button
                     onClick={handleSaveEditorFile}
                     disabled={savingFile}
-                    className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-xl shadow-sm transition-all flex items-center space-x-1.5"
+                    className="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-md shadow-sm transition-all flex items-center space-x-1.5"
                   >
                     {saveSuccess ? (
-                      <Check className="w-3.5 h-3.5 text-emerald-200" />
+                      <Check className="w-3.5 h-3.5 text-blue-200" />
                     ) : (
                       <Save className="w-3.5 h-3.5" />
                     )}
@@ -383,7 +383,7 @@ export const SFTPManager: React.FC<SFTPManagerProps> = ({ connections, initialCo
               </div>
 
               {/* Code Editor Textarea */}
-              <div className="flex-1 bg-slate-950 rounded-xl border border-slate-800 p-3 font-mono text-xs text-slate-200 leading-relaxed shadow-inner">
+              <div className="flex-1 bg-[#000000] rounded-md border border-white/10 p-3 font-mono text-xs text-zinc-200 leading-relaxed shadow-inner">
                 <textarea
                   value={activeEditorFile.content}
                   onChange={(e) =>
@@ -393,16 +393,16 @@ export const SFTPManager: React.FC<SFTPManagerProps> = ({ connections, initialCo
                       isDirty: true,
                     })
                   }
-                  className="w-full h-full min-h-[420px] bg-transparent resize-none focus:outline-none font-mono text-xs leading-relaxed text-slate-200"
+                  className="w-full h-full min-h-[420px] bg-transparent resize-none focus:outline-none font-mono text-xs leading-relaxed text-zinc-200"
                   spellCheck={false}
                 />
               </div>
             </>
           ) : (
             <div className="flex flex-col items-center justify-center h-full text-center space-y-3 py-20">
-              <Code className="w-12 h-12 text-slate-700" />
-              <h3 className="text-sm font-medium text-slate-300">No File Selected for Editing</h3>
-              <p className="text-xs text-slate-500 max-w-sm">
+              <Code className="w-12 h-12 text-zinc-700" />
+              <h3 className="text-sm font-medium text-zinc-300">No File Selected for Editing</h3>
+              <p className="text-xs text-zinc-500 max-w-sm">
                 Click on any text or code file in the left SFTP explorer to view and modify its content in real time.
               </p>
             </div>
@@ -412,9 +412,9 @@ export const SFTPManager: React.FC<SFTPManagerProps> = ({ connections, initialCo
 
       {/* New Folder Modal */}
       {isNewFolderOpen && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4">
-            <h3 className="text-sm font-semibold text-slate-100">Create New Directory</h3>
+        <div className="fixed inset-0 bg-[#000000]  z-50 flex items-center justify-center p-4">
+          <div className="bg-[#0a0a0a] border border-white/10 rounded-md w-full max-w-md p-6  space-y-4">
+            <h3 className="text-sm font-semibold text-zinc-100">Create New Directory</h3>
             <form onSubmit={handleCreateFolder} className="space-y-4 text-xs">
               <input
                 type="text"
@@ -422,17 +422,17 @@ export const SFTPManager: React.FC<SFTPManagerProps> = ({ connections, initialCo
                 placeholder="Folder name (e.g. config)"
                 value={newFolderName}
                 onChange={(e) => setNewFolderName(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 font-mono"
+                className="w-full bg-[#000000] border border-white/10 rounded-md px-3 py-2 text-zinc-200 font-mono"
               />
               <div className="flex justify-end space-x-2">
                 <button
                   type="button"
                   onClick={() => setIsNewFolderOpen(false)}
-                  className="px-4 py-2 bg-slate-800 text-slate-300 rounded-xl"
+                  className="px-4 py-2 bg-[#141414] text-zinc-300 rounded-md"
                 >
                   Cancel
                 </button>
-                <button type="submit" className="px-4 py-2 bg-emerald-600 text-white rounded-xl">
+                <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-md">
                   Create Folder
                 </button>
               </div>
@@ -443,9 +443,9 @@ export const SFTPManager: React.FC<SFTPManagerProps> = ({ connections, initialCo
 
       {/* New File Modal */}
       {isNewFileOpen && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4">
-            <h3 className="text-sm font-semibold text-slate-100">Create New Remote File</h3>
+        <div className="fixed inset-0 bg-[#000000]  z-50 flex items-center justify-center p-4">
+          <div className="bg-[#0a0a0a] border border-white/10 rounded-md w-full max-w-md p-6  space-y-4">
+            <h3 className="text-sm font-semibold text-zinc-100">Create New Remote File</h3>
             <form onSubmit={handleCreateFile} className="space-y-4 text-xs">
               <input
                 type="text"
@@ -453,17 +453,17 @@ export const SFTPManager: React.FC<SFTPManagerProps> = ({ connections, initialCo
                 placeholder="File name (e.g. server.env)"
                 value={newFileName}
                 onChange={(e) => setNewFileName(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 font-mono"
+                className="w-full bg-[#000000] border border-white/10 rounded-md px-3 py-2 text-zinc-200 font-mono"
               />
               <div className="flex justify-end space-x-2">
                 <button
                   type="button"
                   onClick={() => setIsNewFileOpen(false)}
-                  className="px-4 py-2 bg-slate-800 text-slate-300 rounded-xl"
+                  className="px-4 py-2 bg-[#141414] text-zinc-300 rounded-md"
                 >
                   Cancel
                 </button>
-                <button type="submit" className="px-4 py-2 bg-emerald-600 text-white rounded-xl">
+                <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-md">
                   Create File
                 </button>
               </div>
@@ -474,28 +474,28 @@ export const SFTPManager: React.FC<SFTPManagerProps> = ({ connections, initialCo
 
       {/* Upload File Modal */}
       {isUploadOpen && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg p-6 shadow-2xl space-y-4">
-            <h3 className="text-sm font-semibold text-slate-100">Upload File to Remote Directory</h3>
+        <div className="fixed inset-0 bg-[#000000]  z-50 flex items-center justify-center p-4">
+          <div className="bg-[#0a0a0a] border border-white/10 rounded-md w-full max-w-lg p-6  space-y-4">
+            <h3 className="text-sm font-semibold text-zinc-100">Upload File to Remote Directory</h3>
             <form onSubmit={handleUploadSubmit} className="space-y-4 text-xs">
               <div>
-                <label className="block text-slate-300 font-medium mb-1">Target Filename *</label>
+                <label className="block text-zinc-300 font-medium mb-1">Target Filename *</label>
                 <input
                   type="text"
                   required
                   value={uploadFileName}
                   onChange={(e) => setUploadFileName(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 font-mono"
+                  className="w-full bg-[#000000] border border-white/10 rounded-md px-3 py-2 text-zinc-200 font-mono"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-300 font-medium mb-1">File Content</label>
+                <label className="block text-zinc-300 font-medium mb-1">File Content</label>
                 <textarea
                   rows={6}
                   value={uploadFileContent}
                   onChange={(e) => setUploadFileContent(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-slate-200 font-mono text-xs"
+                  className="w-full bg-[#000000] border border-white/10 rounded-md p-3 text-zinc-200 font-mono text-xs"
                 />
               </div>
 
@@ -503,11 +503,11 @@ export const SFTPManager: React.FC<SFTPManagerProps> = ({ connections, initialCo
                 <button
                   type="button"
                   onClick={() => setIsUploadOpen(false)}
-                  className="px-4 py-2 bg-slate-800 text-slate-300 rounded-xl"
+                  className="px-4 py-2 bg-[#141414] text-zinc-300 rounded-md"
                 >
                   Cancel
                 </button>
-                <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-xl">
+                <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-md">
                   Upload to {currentPath}
                 </button>
               </div>

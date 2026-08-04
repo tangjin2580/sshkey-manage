@@ -95,14 +95,14 @@ export const FileSyncManager: React.FC<FileSyncManagerProps> = ({ connections = 
 
   return (
     <div className="p-6 space-y-6 max-w-7xl mx-auto">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-900 p-4 rounded-2xl border border-slate-800 shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#0a0a0a] p-4 rounded-md border border-white/10 shadow-sm">
         <div className="flex items-center space-x-3">
-          <div className="p-2.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-xl">
+          <div className="p-2.5 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-md">
             <RefreshCw className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-base font-semibold text-slate-100">{t.fileSyncTitle}</h2>
-            <p className="text-xs text-slate-400">{t.fileSyncSubtitle}</p>
+            <h2 className="text-base font-semibold text-zinc-100">{t.fileSyncTitle}</h2>
+            <p className="text-xs text-zinc-400">{t.fileSyncSubtitle}</p>
           </div>
         </div>
 
@@ -113,7 +113,7 @@ export const FileSyncManager: React.FC<FileSyncManagerProps> = ({ connections = 
             }
             setIsModalOpen(true);
           }}
-          className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-medium rounded-xl shadow-md shadow-emerald-600/20 flex items-center space-x-1.5"
+          className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-medium rounded-md shadow-sm flex items-center space-x-1.5"
         >
           <Plus className="w-4 h-4" />
           <span>{t.newSyncRule}</span>
@@ -122,7 +122,7 @@ export const FileSyncManager: React.FC<FileSyncManagerProps> = ({ connections = 
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         <div className="lg:col-span-6 space-y-4">
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400 px-1">
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 px-1">
             Sync Task Rules ({rules.length})
           </h3>
 
@@ -133,12 +133,12 @@ export const FileSyncManager: React.FC<FileSyncManagerProps> = ({ connections = 
               return (
                 <div
                   key={rule.id}
-                  className="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3 shadow-sm hover:border-slate-700 transition-colors"
+                  className="bg-[#0a0a0a] border border-white/10 rounded-md p-4 space-y-3 shadow-sm hover:border-zinc-700 transition-colors"
                 >
                   <div className="flex items-start justify-between">
                     <div>
-                      <h4 className="text-sm font-semibold text-slate-100">{rule.name}</h4>
-                      <p className="text-xs text-slate-400 font-mono mt-0.5">
+                      <h4 className="text-sm font-semibold text-zinc-100">{rule.name}</h4>
+                      <p className="text-xs text-zinc-400 font-mono mt-0.5">
                         Target: {rule.connectionAlias}
                       </p>
                     </div>
@@ -147,7 +147,7 @@ export const FileSyncManager: React.FC<FileSyncManagerProps> = ({ connections = 
                       <button
                         onClick={() => handleStartSync(rule.id)}
                         disabled={isSyncing}
-                        className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-xl flex items-center space-x-1.5 transition-colors shadow-sm"
+                        className="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-md flex items-center space-x-1.5 transition-colors shadow-sm"
                       >
                         <Play className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
                         <span>{isSyncing ? 'Syncing...' : 'Start Sync'}</span>
@@ -155,19 +155,19 @@ export const FileSyncManager: React.FC<FileSyncManagerProps> = ({ connections = 
 
                       <button
                         onClick={() => handleDeleteRule(rule.id)}
-                        className="p-1.5 hover:bg-rose-500/10 text-slate-500 hover:text-rose-400 rounded-lg"
+                        className="p-1.5 hover:bg-rose-500/10 text-zinc-500 hover:text-rose-400 rounded-md"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     </div>
                   </div>
 
-                  <div className="bg-slate-950 p-2.5 rounded-xl border border-slate-800/80 font-mono text-[11px] space-y-1">
-                    <div className="flex items-center justify-between text-slate-400">
+                  <div className="bg-[#000000] p-2.5 rounded-md border border-white/10 font-mono text-[11px] space-y-1">
+                    <div className="flex items-center justify-between text-zinc-400">
                       <span>Local:</span>
-                      <span className="text-slate-200">{rule.localPath}</span>
+                      <span className="text-zinc-200">{rule.localPath}</span>
                     </div>
-                    <div className="flex items-center justify-between text-slate-400">
+                    <div className="flex items-center justify-between text-zinc-400">
                       <span>Remote:</span>
                       <span className="text-amber-400">{rule.remotePath}</span>
                     </div>
@@ -175,15 +175,15 @@ export const FileSyncManager: React.FC<FileSyncManagerProps> = ({ connections = 
 
                   {isSyncing && (
                     <div className="space-y-1">
-                      <div className="flex justify-between text-[10px] text-slate-400 font-mono">
+                      <div className="flex justify-between text-[10px] text-zinc-400 font-mono">
                         <span>Sync Progress</span>
                         <span>
                           {rule.syncedFiles} / {rule.totalFiles} files
                         </span>
                       </div>
-                      <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                      <div className="w-full h-1.5 bg-[#141414] rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-emerald-400 transition-all duration-300"
+                          className="h-full bg-blue-400 transition-all duration-300"
                           style={{
                             width: `${((rule.syncedFiles || 0) / (rule.totalFiles || 1)) * 100}%`,
                           }}
@@ -192,10 +192,10 @@ export const FileSyncManager: React.FC<FileSyncManagerProps> = ({ connections = 
                     </div>
                   )}
 
-                  <div className="flex items-center justify-between text-[10px] text-slate-500 border-t border-slate-800/80 pt-2">
+                  <div className="flex items-center justify-between text-[10px] text-zinc-500 border-t border-white/10 pt-2">
                     <div className="flex items-center space-x-1">
                       {(rule.ignorePatterns || []).slice(0, 3).map((p) => (
-                        <span key={p} className="px-1.5 py-0.5 bg-slate-800 rounded">
+                        <span key={p} className="px-1.5 py-0.5 bg-[#141414] rounded">
                           ignore: {p}
                         </span>
                       ))}
@@ -211,30 +211,30 @@ export const FileSyncManager: React.FC<FileSyncManagerProps> = ({ connections = 
           </div>
         </div>
 
-        <div className="lg:col-span-6 bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col space-y-3">
-          <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+        <div className="lg:col-span-6 bg-[#0a0a0a] border border-white/10 rounded-md p-4 flex flex-col space-y-3">
+          <div className="flex items-center justify-between border-b border-white/10 pb-2">
             <div className="flex items-center space-x-2">
-              <Terminal className="w-4 h-4 text-emerald-400" />
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-300">
+              <Terminal className="w-4 h-4 text-blue-400" />
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-300">
                 Sync Execution Logs
               </h3>
             </div>
-            <span className="text-[10px] text-slate-500 font-mono">{logs.length} entries</span>
+            <span className="text-[10px] text-zinc-500 font-mono">{logs.length} entries</span>
           </div>
 
-          <div className="flex-1 bg-slate-950 border border-slate-800 rounded-xl p-3 font-mono text-[11px] space-y-1.5 max-h-[500px] overflow-y-auto leading-relaxed">
+          <div className="flex-1 bg-[#000000] border border-white/10 rounded-md p-3 font-mono text-[11px] space-y-1.5 max-h-[500px] overflow-y-auto leading-relaxed">
             {logs.map((log) => (
               <div key={log.id} className="flex items-start space-x-2">
-                <span className="text-slate-600 shrink-0">[{log.timestamp}]</span>
+                <span className="text-zinc-600 shrink-0">[{log.timestamp}]</span>
                 <span
                   className={
                     log.level === 'success'
-                      ? 'text-emerald-400 font-semibold'
+                      ? 'text-blue-400 font-semibold'
                       : log.level === 'warn'
                       ? 'text-amber-400'
                       : log.level === 'error'
                       ? 'text-rose-400 font-semibold'
-                      : 'text-slate-300'
+                      : 'text-zinc-300'
                   }
                 >
                   {log.message}
@@ -246,27 +246,27 @@ export const FileSyncManager: React.FC<FileSyncManagerProps> = ({ connections = 
       </div>
 
       {isModalOpen && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4">
-            <h3 className="text-sm font-semibold text-slate-100">Create New FileSync Task Rule</h3>
+        <div className="fixed inset-0 bg-[#000000]  z-50 flex items-center justify-center p-4">
+          <div className="bg-[#0a0a0a] border border-white/10 rounded-md w-full max-w-md p-6  space-y-4">
+            <h3 className="text-sm font-semibold text-zinc-100">Create New FileSync Task Rule</h3>
             <form onSubmit={handleCreateRule} className="space-y-4 text-xs">
               <div>
-                <label className="block text-slate-300 font-medium mb-1">Task Name *</label>
+                <label className="block text-zinc-300 font-medium mb-1">Task Name *</label>
                 <input
                   type="text"
                   required
                   value={newRule.name}
                   onChange={(e) => setNewRule({ ...newRule, name: e.target.value })}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200"
+                  className="w-full bg-[#000000] border border-white/10 rounded-md px-3 py-2 text-zinc-200"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-300 font-medium mb-1">Target Remote Host *</label>
+                <label className="block text-zinc-300 font-medium mb-1">Target Remote Host *</label>
                 <select
                   value={newRule.connectionId}
                   onChange={(e) => setNewRule({ ...newRule, connectionId: e.target.value })}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 font-mono"
+                  className="w-full bg-[#000000] border border-white/10 rounded-md px-3 py-2 text-zinc-200 font-mono"
                 >
                   {connections.map((c) => (
                     <option key={c.id} value={c.id}>
@@ -278,37 +278,37 @@ export const FileSyncManager: React.FC<FileSyncManagerProps> = ({ connections = 
 
               <div className="grid grid-cols-2 gap-2 font-mono">
                 <div>
-                  <label className="block text-slate-300 font-medium mb-1">Local Path *</label>
+                  <label className="block text-zinc-300 font-medium mb-1">Local Path *</label>
                   <input
                     type="text"
                     required
                     value={newRule.localPath}
                     onChange={(e) => setNewRule({ ...newRule, localPath: e.target.value })}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200"
+                    className="w-full bg-[#000000] border border-white/10 rounded-md px-3 py-2 text-zinc-200"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 font-medium mb-1">Remote Path *</label>
+                  <label className="block text-zinc-300 font-medium mb-1">Remote Path *</label>
                   <input
                     type="text"
                     required
                     value={newRule.remotePath}
                     onChange={(e) => setNewRule({ ...newRule, remotePath: e.target.value })}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200"
+                    className="w-full bg-[#000000] border border-white/10 rounded-md px-3 py-2 text-zinc-200"
                   />
                 </div>
               </div>
 
-              <div className="flex justify-end space-x-2 pt-2 border-t border-slate-800">
+              <div className="flex justify-end space-x-2 pt-2 border-t border-white/10">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 bg-slate-800 text-slate-300 rounded-xl"
+                  className="px-4 py-2 bg-[#141414] text-zinc-300 rounded-md"
                 >
                   Cancel
                 </button>
-                <button type="submit" className="px-4 py-2 bg-emerald-600 text-white rounded-xl font-medium">
+                <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-md font-medium">
                   Create Rule
                 </button>
               </div>
