@@ -3,7 +3,6 @@ import path from 'path';
 import http from 'http';
 import os from 'os';
 import { WebSocketServer, WebSocket } from 'ws';
-import { createServer as createViteServer } from 'vite';
 import { Client as SSHClient } from 'ssh2';
 
 import { getAllKeys, generateKey, deleteKey, computeOpenSSHFingerprint } from './server/keyService.js';
@@ -14,7 +13,7 @@ import { getSyncRules, saveSyncRule, deleteSyncRule, getSyncLogs, addSyncLog, tr
 
 async function startServer() {
   const app = express();
-  const PORT = 3000;
+  const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 
   app.use(express.json({ limit: '10mb' }));
 
@@ -450,6 +449,7 @@ async function startServer() {
 
   // Vite Middleware for development or static file serving for production
   if (process.env.NODE_ENV !== 'production') {
+    const { createServer: createViteServer } = await import('vite');
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: 'spa',
