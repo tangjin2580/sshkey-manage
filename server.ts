@@ -336,7 +336,7 @@ async function startServer() {
     const hostname = url.searchParams.get('hostname') || '127.0.0.1';
     const port = Number(url.searchParams.get('port') || '22');
     let username = url.searchParams.get('username') || 'admin';
-    if (username === 'undefined') username = 'admin';
+    if (username === 'undefined' || username === 'null' || !username) username = 'admin';
     const password = url.searchParams.get('password') || '';
     const authType = url.searchParams.get('authType') || 'password';
     const keyId = url.searchParams.get('keyId') || '';
@@ -440,16 +440,21 @@ async function startServer() {
           username,
         };
         
-        if (authType === 'key' && keyId) {
-          const keys = getAllKeys();
-          const sshKey = keys.find(k => k.id === keyId);
-          if (sshKey && sshKey.privateKey) {
-            connectConfig.privateKey = sshKey.privateKey;
-            if (password) {
-              connectConfig.passphrase = password;
+        if (authType === 'key') {
+          if (keyId) {
+            const keys = getAllKeys();
+            const sshKey = keys.find(k => k.id === keyId);
+            if (sshKey && sshKey.privateKey) {
+              connectConfig.privateKey = sshKey.privateKey;
+              if (password) {
+                connectConfig.passphrase = password;
+              }
+            } else {
+              ws.send(`\r\n\x1b[31mSSH Error: Private key not found for keyId ${keyId}\x1b[0m\r\n`);
+              return;
             }
           } else {
-            ws.send(`\r\n\x1b[31mSSH Error: Private key not found for keyId ${keyId}\x1b[0m\r\n`);
+            ws.send(`\r\n\x1b[31mSSH Error: Authentication is set to 'Key', but no Key is selected. Since this app runs in the cloud, it cannot read your local ~/.ssh folder. Please go to 'Key Studio', paste your private key, and select it in the connection settings.\x1b[0m\r\n`);
             return;
           }
         } else {

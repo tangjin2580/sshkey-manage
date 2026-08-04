@@ -91,7 +91,7 @@ export default function App() {
 
   const handleSyncSSHConfig = async () => {
     try {
-      const res = await fetch('/api/ssh-config/sync-to-store', { method: 'POST' });
+      const res = await fetch('/api/ssh-config/sync-connections', { method: 'POST' });
       const data = await res.json();
       if (data.success) {
         await fetchConnections();
