@@ -66,11 +66,14 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # 调试用：打包完后看 release/ 实际产出了什么（CI 日志直接可见）
+      # 必须 shell: bash —— windows-latest 默认是 PowerShell，不认 2>/dev/null，
+      # 会把 /dev/null 当字面路径解析，找不到就报错
       - name: List release artifacts
         if: always()
+        shell: bash
         run: |
           echo "=== release/ contents ==="
-          ls -lhR release/ 2>/dev/null || echo "(release/ not found)"
+          if [ -d release ]; then ls -lhR release/; else echo "(release/ not found)"; fi
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
