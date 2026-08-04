@@ -33,34 +33,35 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # Node 20 已被 GitHub Actions runner 弃用（2025-09-19），切到 Node 22 LTS
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      # 项目用 bun 维护依赖（仓库有 bun.lock，无 package-lock.json）。
+      # 用 bun 装包能复用本地锁文件，不会和本地开发环境 drift。
+      # bun 生成的 node_modules/ 与 npm 兼容，下游 vite/esbuild/electron-builder 无需改动。
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          node-version: '22'
-          cache: 'npm'
+          bun-version: latest
 
       - name: Install dependencies
-        run: npm install
+        run: bun install --frozen-lockfile
 
       - name: Build Application
-        run: npm run build
+        run: bun run build
 
       - name: Package for Windows
         if: matrix.os == 'windows-latest'
-        run: npx electron-builder -w
+        run: bunx electron-builder -w
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Package for macOS
         if: matrix.os == 'macos-latest'
-        run: npx electron-builder -m
+        run: bunx electron-builder -m
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Package for Linux
         if: matrix.os == 'ubuntu-latest'
-        run: npx electron-builder -l
+        run: bunx electron-builder -l
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
