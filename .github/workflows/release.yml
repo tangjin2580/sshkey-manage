@@ -20,6 +20,7 @@ on:
   workflow_dispatch:
 
 jobs:
+  # === 第一阶段：每个平台单独跑一份 build ===
   build:
     name: Build on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
@@ -75,11 +76,11 @@ jobs:
           echo "=== release/ contents ==="
           if [ -d release ]; then ls -lhR release/; else echo "(release/ not found)"; fi
 
-      - name: Upload Artifacts
+      # 把本平台的产物上传为 artifact，等 release job 拉取
+      - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: app-release-${{ matrix.os }}
-          # 即使部分文件没生成也允许上传（不阻塞后续 release 步骤）
           if-no-files-found: warn
           path: |
             release/*.exe
@@ -89,20 +90,46 @@ jobs:
             release/*.zip
             release/*.tar.gz
 
-      - name: Release to GitHub
-        uses: softprops/action-gh-release@v2
-        if: startsWith(github.ref, 'refs/tags/')
+  # === 第二阶段：等三平台都跑完，合并 artifact 建一个 release ===
+  release:
+    name: Publish GitHub Release
+    needs: build
+    # 只在打 tag 推送时才建 release（v1.0.0、v1.2.3-rc1 等）
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # 把三平台的 artifact 全部下到同一个 runner 上
+      # 不指定 name → 下载所有 artifact；每个落到 artifacts/<artifact-name>/ 子目录
+      # 最终结构：artifacts/app-release-<os>/*.exe|.dmg|.AppImage|.deb
+      - name: Download all platform artifacts
+        uses: actions/download-artifact@v4
         with:
-          tag_name: latest
-          name: Latest Build
-          # 关键：避免部分平台产物缺失时整个 release 步骤失败
+          path: artifacts
+
+      - name: List downloaded artifacts
+        run: |
+          echo "=== artifacts/ contents ==="
+          ls -lhR artifacts/ 2>/dev/null || echo "(no artifacts downloaded)"
+
+      # 按实际 tag 名建 release，三平台产物一次性塞进去
+      # tag_name 不写死 —— 默认就是 ${{ github.ref_name }}（去掉 refs/tags/ 前缀）
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Release ${{ github.ref_name }}
+          generate_release_notes: true
+          # 即使部分平台产物缺失也不阻塞 release 步骤
           fail_on_unmatched_files: false
           files: |
-            release/*.exe
-            release/*.dmg
-            release/*.AppImage
-            release/*.deb
-            release/*.zip
-            release/*.tar.gz
+            artifacts/**/*.exe
+            artifacts/**/*.dmg
+            artifacts/**/*.AppImage
+            artifacts/**/*.deb
+            artifacts/**/*.zip
+            artifacts/**/*.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
