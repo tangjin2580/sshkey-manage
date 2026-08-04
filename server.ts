@@ -214,7 +214,9 @@ async function startServer() {
     try {
       const entries = parseSSHConfigBlocks();
       const keys = getAllKeys();
+      const existing = getAllConnections();
       let importedCount = 0;
+      let updatedCount = 0;
 
       for (const e of entries) {
         if (e.host === '*') continue;
@@ -228,7 +230,13 @@ async function startServer() {
           if (match) resolvedKeyId = match.id;
         }
 
-        addOrUpdateConnection({
+        // 按 alias upsert —— 同一个 Host 重新 sync 时**修正**已有连接
+        // （修 keyId / identityFile / 任何变了的内容），不重复插入
+        const existingMatch = existing.find(
+          (c) => (c.alias || '').toLowerCase() === (e.host || '').toLowerCase()
+        );
+
+        const profile: Partial<ConnectionProfile> = {
           alias: e.host,
           hostname: e.hostname || '127.0.0.1',
           port: e.port || 22,
@@ -237,11 +245,18 @@ async function startServer() {
           identityFile: e.identityFile,
           keyId: resolvedKeyId,
           group: 'Imported from ~/.ssh/config',
-        });
-        importedCount++;
+        };
+        if (existingMatch) profile.id = existingMatch.id;
+
+        addOrUpdateConnection(profile);
+        if (existingMatch) updatedCount++;
+        else importedCount++;
       }
 
-      res.json({ success: true, message: `Synced ${importedCount} config entries into Connection profiles` });
+      res.json({
+        success: true,
+        message: `Synced ${importedCount} new, updated ${updatedCount} existing connections from ~/.ssh/config`,
+      });
     } catch (err: any) {
       res.status(500).json({ success: false, error: err.message });
     }
@@ -456,36 +471,43 @@ async function startServer() {
         
         if (authType === 'key') {
           let privateKeyContent = '';
+          let usedKeySource = '';
 
           if (keyId) {
             const keys = getAllKeys();
             const sshKey = keys.find(k => k.id === keyId);
             if (sshKey && sshKey.privateKey) {
               privateKeyContent = sshKey.privateKey;
+              usedKeySource = `keyId=${keyId} (Key Studio: ${sshKey.name}, fingerprint=${sshKey.fingerprint})`;
             } else {
-              ws.send(`\r\n\x1b[31mSSH Error: Private key not found for keyId ${keyId}\x1b[0m\r\n`);
+              ws.send(`\r\n\x1b[31mSSH Error: keyId "${keyId}" not found in Key Studio. The key may have been deleted. Re-pick one in the connection edit form, or re-sync ~/.ssh/config.\x1b[0m\r\n`);
               return;
             }
           } else if (identityFile) {
             // 兜底：直接从磁盘读 ~/.ssh/<identityFile>
-            // 这样 sync from ~/.ssh/config 后不用先 import 私钥也能连
             try {
               const expanded = identityFile.startsWith('~/') || identityFile.startsWith('~\\')
                 ? path.join(os.homedir(), identityFile.slice(2))
                 : identityFile;
               if (!fs.existsSync(expanded)) {
-                ws.send(`\r\n\x1b[31mSSH Error: Key file not found: ${expanded}. Check the path or import it into Key Studio first.\x1b[0m\r\n`);
+                ws.send(`\r\n\x1b[31mSSH Error: identityFile "${identityFile}" (resolved: ${expanded}) not found on disk. Check the path or sync from ~/.ssh/config.\x1b[0m\r\n`);
                 return;
               }
               privateKeyContent = fs.readFileSync(expanded, 'utf8');
+              usedKeySource = `identityFile=${identityFile} (resolved: ${expanded})`;
             } catch (err: any) {
-              ws.send(`\r\n\x1b[31mSSH Error: Failed to read key file: ${err.message}\x1b[0m\r\n`);
+              ws.send(`\r\n\x1b[31mSSH Error: Failed to read identityFile "${identityFile}": ${err.message}\x1b[0m\r\n`);
               return;
             }
           } else {
             ws.send(`\r\n\x1b[31mSSH Error: Authentication is set to 'Key', but no key is linked. Pick one in the connection edit form, or use 'Sync from ~/.ssh/config'.\x1b[0m\r\n`);
             return;
           }
+
+          // 诊断日志：发到终端，告诉用户当前尝试用哪个 key
+          // （"All configured authentication methods failed" 出现时，
+          // 这条 log 能直接让用户看到用错 key 没有）
+          ws.send(`\r\n\x1b[90m[auth] trying publickey using ${usedKeySource}\x1b[0m\r\n`);
 
           connectConfig.privateKey = privateKeyContent;
           if (password) {
